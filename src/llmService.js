@@ -18,7 +18,7 @@ if (GAIA_API_KEY && GAIA_BASE_URL) {
         apiKey: GAIA_API_KEY, // Required by the library, even if not enforced
         baseURL: GAIA_BASE_URL, // Point to your local Gaia node
     });
-    console.log(`LLM Service initialized. Using model: ${LLM_MODEL} at ${GAIA_BASE_URL}`);
+    //console.log(`LLM Service initialized. Using model: ${LLM_MODEL} at ${GAIA_BASE_URL}`);
 } else {
     console.warn('GAIA_API_KEY or GAIA_BASE_URL not defined in .env. LLM explanations will be disabled.');
     openaiClient = null;
@@ -38,7 +38,7 @@ async function generateExplanation(userInterestsString, recommendedPlace) {
     }
 
     try {
-        console.log(`Generating explanation for place: ${recommendedPlace.name}`);
+        //console.log(`Generating explanation for place: ${recommendedPlace.name}`);
 
         // --- Prepare the prompt using RAG principles ---
         const systemPrompt = "You are a helpful and culturally aware assistant. Your task is to explain why a specific place is recommended to a user based on their cultural interests. You will be given factual data from Qloo, a cultural intelligence platform. Your explanation must be based SOLELY on this Qloo data. Do not make up reasons. Be concise, engaging, and sound human. Avoid phrases like 'The data suggests...' or 'Based on the information provided...'. Just give the explanation directly.";
@@ -56,8 +56,8 @@ Qloo, a cultural intelligence platform, provides the following data to explain t
 Based strictly on this Qloo data, explain in a natural, engaging sentence or two why someone with interests in [${userInterestsString}] would likely enjoy "${recommendedPlace.name}". Focus on the connection implied by the Qloo data (e.g., shared aesthetics, audience overlap, thematic links, category). Do not invent reasons not supported by the data provided. Make it sound like a helpful, personalized tip.
 `;
 
-        console.log("--- LLM System Prompt ---\n", systemPrompt);
-        console.log("--- LLM User Prompt ---\n", userPrompt);
+        //console.log("--- LLM System Prompt ---\n", systemPrompt);
+        //console.log("--- LLM User Prompt ---\n", userPrompt);
 
         // --- Make the API call using the OpenAI SDK ---
         const chatCompletion = await openaiClient.chat.completions.create({
@@ -70,7 +70,7 @@ Based strictly on this Qloo data, explain in a natural, engaging sentence or two
             temperature: 0.7 // Adjust for creativity vs. consistency
         });
 
-        console.log("LLM API Response Status: Success");
+        //console.log("LLM API Response Status: Success");
         // console.log("LLM Full Response:", JSON.stringify(chatCompletion, null, 2)); // Debug
 
         // --- Extract the generated text ---
@@ -83,7 +83,7 @@ Based strictly on this Qloo data, explain in a natural, engaging sentence or two
                  // Optionally return a different fallback or the raw data summary
             }
             
-            console.log(`Generated explanation for ${recommendedPlace.name}: ${explanation}`);
+            //console.log(`Generated explanation for ${recommendedPlace.name}: ${explanation}`);
             return explanation;
         } else {
             console.warn("Unexpected LLM API response structure for explanation:", chatCompletion);

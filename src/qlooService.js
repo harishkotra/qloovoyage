@@ -24,9 +24,9 @@ const qlooClient = axios.create({
  */
 async function searchEntities(query) {
     try {
-        console.log(`Searching for entities with query: ${query}`);
+        //console.log(`Searching for entities with query: ${query}`);
         const response = await qlooClient.get('/search', { params: { query: query } });
-        console.log(`Search Entities Response Status: ${response.status}`);
+        //console.log(`Search Entities Response Status: ${response.status}`);
 
         if (response.data?.results && Array.isArray(response.data.results)) {
             // Prioritize entities that seem more concrete (e.g., artists) over generic ones
@@ -56,9 +56,9 @@ async function searchEntities(query) {
  */
 async function searchTags(query) {
     try {
-        console.log(`Searching for tags with query: ${query}`);
+        //console.log(`Searching for tags with query: ${query}`);
         const response = await qlooClient.get('/v2/tags', { params: { 'filter.query': query } });
-        console.log(`Search Tags Response Status: ${response.status}`);
+        //console.log(`Search Tags Response Status: ${response.status}`);
 
         if (response.data?.results && Array.isArray(response.data.results)) {
             return response.data.results.map(item => ({
@@ -86,26 +86,26 @@ async function searchTags(query) {
  */
 async function getRecommendations(interests, locationName) {
     try {
-        console.log(`Fetching recommendations for interests: [${interests.join(', ')}], location: ${locationName}`);
+        //console.log(`Fetching recommendations for interests: [${interests.join(', ')}], location: ${locationName}`);
 
         // --- Step 1: Resolve User Interests ---
         const signalEntities = [];
         const signalTags = [];
 
         for (const interest of interests) {
-            console.log(`Attempting to resolve interest: ${interest}`);
+            //console.log(`Attempting to resolve interest: ${interest}`);
             // --- Resolution Strategy ---
             // 1. Try Tags First (Better for genres/concepts like "Ambient music")
             let tags = await searchTags(interest);
             if (tags.length > 0) {
                 signalTags.push(tags[0].id); // Take first match
-                console.log(`Resolved '${interest}' to tag ID: ${tags[0].id}`);
+                //console.log(`Resolved '${interest}' to tag ID: ${tags[0].id}`);
             } else {
                 // 2. Fallback to Entities if Tag not found
                 let entities = await searchEntities(interest);
                 if (entities.length > 0) {
                     signalEntities.push(entities[0].id); // Take first match
-                    console.log(`Resolved '${interest}' to entity ID: ${entities[0].id} (${entities[0].type})`);
+                    //console.log(`Resolved '${interest}' to entity ID: ${entities[0].id} (${entities[0].type})`);
                 } else {
                     console.warn(`Could not resolve interest '${interest}' to a known entity or tag. Skipping.`);
                 }
@@ -125,14 +125,14 @@ async function getRecommendations(interests, locationName) {
             ...signalEntities.length > 0 && { 'signal.interests.entities': signalEntities.join(',') },
             ...signalTags.length > 0 && { 'signal.interests.tags': signalTags.join(',') },
             'filter.location.query': locationName,
-            'take': 15
+            'take': 1
         };
 
-        console.log("Qloo Insights API Request Params:", params);
+        //console.log("Qloo Insights API Request Params:", params);
 
         // --- Step 3: Make the API Call ---
         const response = await qlooClient.get('/v2/insights', { params });
-        console.log("Qloo Insights API Response Status:", response.status);
+        //console.log("Qloo Insights API Response Status:", response.status);
 
         // --- Step 4: Process the Response & Handle Warnings ---
         // Check for warnings first
@@ -154,20 +154,20 @@ async function getRecommendations(interests, locationName) {
         let rawResults = [];
         if (response.data?.results?.entities && Array.isArray(response.data.results.entities)) {
             rawResults = response.data.results.entities;
-            console.log(`Successfully retrieved ${rawResults.length} raw results from Qloo.`);
+            //console.log(`Successfully retrieved ${rawResults.length} raw results from Qloo.`);
         } else if (response.data?.results && Array.isArray(response.data.results)) {
              // Fallback to previous assumption
              rawResults = response.data.results;
-             console.log(`Successfully retrieved ${rawResults.length} raw results (fallback structure) from Qloo.`);
+             //console.log(`Successfully retrieved ${rawResults.length} raw results (fallback structure) from Qloo.`);
         } else {
             console.warn("Unexpected Qloo Insights API response structure for results:", response.data);
             // Log the full response for debugging unexpected structure
-            // console.log("Full Qloo Response Data:", JSON.stringify(response.data, null, 2));
+            // //console.log("Full Qloo Response Data:", JSON.stringify(response.data, null, 2));
             return [];
         }
 
         if (rawResults.length === 0) {
-             console.log("Qloo returned an empty results list.");
+             //console.log("Qloo returned an empty results list.");
              return [];
         }
 
@@ -199,7 +199,7 @@ async function getRecommendations(interests, locationName) {
             return { id, name, type, description, affinityScore, qlooMetadata };
         });
 
-        console.log(`Parsed ${parsedResults.length} recommendations.`);
+        //console.log(`Parsed ${parsedResults.length} recommendations.`);
         return parsedResults;
 
     } catch (error) {
