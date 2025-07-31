@@ -1,0 +1,34 @@
+/* public/style.css */
+/* You can add custom styles here or rely mostly on Bootstrap */
+body {
+    background-color: #f8f9fa; /* Light grey background */
+}
+
+.container {
+    max-width: 800px; /* Limit width on large screens */
+}
+
+.itinerary-day {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.itinerary-place {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.itinerary-place:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.explanation {
+    font-style: italic;
+    color: #6c757d; /* Bootstrap muted color */
+}
