@@ -9,6 +9,8 @@ Built with a privacy-first approach, QlooVoyage ensures your data stays private 
 <img width="425" height="851" alt="image" src="https://github.com/user-attachments/assets/384481b5-aac5-4350-ab40-335bf0ae4160" />
 <img width="428" height="993" alt="image" src="https://github.com/user-attachments/assets/33059ad0-4bf6-413d-95e4-fdad6601633a" />
 
+https://github.com/user-attachments/assets/70445d5c-79c5-460a-8d35-9dd9225842a8
+
 ## Key Features 
 
 - **Deep Cultural Recommendations**: Move beyond generic lists. Get places recommended because fans of your favorite music, films, or styles actually visit them.
