@@ -114,7 +114,7 @@ async function getRecommendations(interests, locationName) {
             ...signalEntities.length > 0 && { 'signal.interests.entities': signalEntities.join(',') },
             ...signalTags.length > 0 && { 'signal.interests.tags': signalTags.join(',') },
             'filter.location.query': locationName,
-            'take': 1
+            'take': 5
         };
 
         //console.log("Qloo Insights API Request Params:", params);
