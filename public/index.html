@@ -6,599 +6,10 @@
     <title>QlooVoyage</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <!-- Link to CSS -->
     <link rel="stylesheet" href="/style.css">
-    <!-- Favicon and Icons -->
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" sizes="16x16" href="/images/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-    <style>
-        :root {
-            /* Main gradient colors (using two vibrant oranges) */
-            --color-1: #fdb94e; /* Light Orange */
-            --color-2: #f38654; /* Medium Orange-Red */
-
-            /* Accent/Highlight colors */
-            --color-9: #56c1ab; /* Teal/Green */
-            --color-10: #6a6b6a; /* Dark Gray */
-
-            /* Active/Selected state color */
-            --color-selected: var(--color-9); /* Use Teal for selections */
-
-            /* Status message colors (derived from the palette conceptually) */
-            --color-info-bg: #d1ecf1; /* Keep existing, close to light blue */
-            --color-info-text: #0c5460; /* Keep existing */
-            --color-success-bg: #d4edda; /* Keep existing, close to light green */
-            --color-success-text: #155724; /* Keep existing */
-            --color-warning-bg: #fff3cd; /* Keep existing, close to light yellow/orange */
-            --color-warning-text: #856404; /* Keep existing */
-            --color-danger-bg: #f8d7da; /* Keep existing, close to light red */
-            --color-danger-text: #721c24; /* Keep existing */
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body, html {
-            height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f0f2f5;
-            overflow-x: hidden;
-        }
-
-        #app {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background: linear-gradient(to bottom, #ffffff, #e0e0e0);
-        }
-
-        /* --- Screen Containers --- */
-        .screen {
-            display: none;
-            flex-direction: column;
-            height: 100vh;
-            width: 100vw;
-            padding: 15px;
-            overflow-y: auto;
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        /* --- Header --- */
-        .app-header {
-            text-align: center;
-            padding: 15px 0;
-            flex-shrink: 0;
-        }
-
-        .app-header h1 {
-            font-size: 1.8rem;
-            margin: 0;
-            /* Use a vibrant color from the palette for the main title */
-            color: var(--color-1); /* Light Orange */
-        }
-
-        .app-header p {
-            font-size: 0.9rem;
-            color: #666;
-            margin: 5px 0 0;
-        }
-
-        /* --- Welcome Screen --- */
-        #welcomeScreen {
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
-
-        #welcomeScreen h2 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            /* Use secondary color if defined, or fallback */
-            color: var(--color-2); /* Medium Orange-Red */
-        }
-
-        #welcomeScreen p {
-            margin-bottom: 30px;
-            color: #555;
-        }
-
-        #startButton {
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            border-radius: 30px;
-            /* Use the main gradient */
-            background: linear-gradient(to right, var(--color-1), var(--color-2)); /* Light Orange to Medium Orange-Red */
-            border: none;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* --- City Selection Screen --- */
-        #citySelectionScreen {
-            /* Inherits general screen styles */
-        }
-
-        #cityCardContainer {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px; /* Space between cards */
-            margin-top: 20px;
-        }
-
-        .city-card {
-            width: 150px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.2s ease-in-out;
-        }
-
-        .city-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .city-card.selected {
-            /* Use the teal for selected city */
-            border-color: var(--color-selected);
-            box-shadow: 0 2px 5px rgba(86, 193, 171, 0.4); /* Teal shadow with some transparency */
-        }
-
-        .city-image {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-
-        .city-name {
-            text-align: center;
-            padding: 10px;
-            font-weight: bold;
-        }
-
-        #citySelectionStatus {
-            margin-top: 15px; /* Add space above status */
-        }
-
-        /* --- Interest Selection Screen --- */
-        #interestSelectionScreen {
-            /* Inherits general screen styles */
-        }
-
-        #interestButtonContainer {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px; /* Space between buttons */
-            margin-top: 20px;
-            padding: 0 10px; /* Add some side padding */
-        }
-
-        .interest-button {
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            padding: 10px 20px;
-            border-radius: 20px; /* More rounded */
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease; /* Smooth transition for hover/select */
-        }
-
-        .interest-button:hover {
-            background-color: #e0e0e0; /* Slightly darker on hover */
-        }
-
-        .interest-button.selected {
-            /* Use the teal background for selected interests */
-            background-color: var(--color-selected); /* Teal */
-            color: white;
-            border-color: var(--color-selected); /* Teal border */
-            /* Remove gradient, use solid color */
-            /* Add a subtle shadow for depth */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transform: scale(1.05); /* Slightly enlarge when selected */
-        }
-
-        #interestSelectionStatus {
-            margin-top: 15px; /* Add space above status */
-        }
-
-        /* --- Itinerary Screen --- */
-        #itineraryScreen {
-            /* Inherits general screen styles */
-        }
-
-        #itineraryContent {
-            /* Inherits styles from previous CSS */
-        }
-
-        .itinerary-day {
-            background-color: #ffffff;
-            border: 1px solid #dee2e6;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        }
-
-        .itinerary-place {
-            border-bottom: 1px solid #e9ecef;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .itinerary-place:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .explanation {
-            font-style: italic;
-            /* Use the teal as a subtle background for explanations */
-            background-color: rgba(86, 193, 171, 0.15); /* Very light teal background */
-            padding: 0.75rem;
-            border-radius: 0.375rem;
-            margin-top: 0.5rem;
-            color: #495057; /* Adjust text color for readability */
-        }
-
-        #itineraryStatus {
-            margin-top: 15px; /* Add space above status */
-        }
-
-        /* --- Shared Components --- */
-        /* Primary Buttons (Next, Generate, Copy, Start Over) */
-        .btn-primary {
-            /* Use the main gradient */
-            background: linear-gradient(to right, var(--color-1), var(--color-2)); /* Light Orange to Medium Orange-Red */
-            border: none; /* Remove default border */
-            padding: 10px 15px;
-            border-radius: 20px; /* Keep rounded */
-            font-weight: bold;
-            color: white; /* Ensure white text */
-        }
-
-        /* Optional: Add hover effect for primary buttons */
-        .btn-primary:hover {
-            opacity: 0.9; /* Slightly reduce opacity on hover */
-        }
-
-        /* Secondary Buttons (Back) */
-        .btn-secondary {
-            /* Use the dark gray for secondary actions */
-            background-color: var(--color-10); /* Dark Gray */
-            border: none; /* Remove default border */
-            padding: 10px 15px;
-            border-radius: 20px; /* Keep rounded */
-            color: white; /* Ensure white text */
-        }
-
-        /* Optional: Add hover effect for secondary buttons */
-        .btn-secondary:hover {
-            opacity: 0.9;
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: auto;
-            padding: 15px 0;
-            flex-shrink: 0;
-        }
-
-        .status-message {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .status-message.alert-info {
-            background-color: var(--color-info-bg);
-            color: var(--color-info-text);
-        }
-
-        .status-message.alert-success {
-            background-color: var(--color-success-bg);
-            color: var(--color-success-text);
-        }
-
-        .status-message.alert-warning {
-            background-color: var(--color-warning-bg);
-            color: var(--color-warning-text);
-        }
-
-        .status-message.alert-danger {
-            background-color: var(--color-danger-bg);
-            color: var(--color-danger-text);
-        }
-
-        /* --- Loading Spinner --- */
-        .loading-spinner {
-            display: inline-block;
-            width: 1.5rem;
-            height: 1.5rem;
-            vertical-align: text-bottom;
-            border: 0.2em solid currentColor;
-            border-right-color: transparent;
-            border-radius: 50%;
-            animation: spinner-border 0.75s linear infinite;
-        }
-
-        @keyframes spinner-border {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .explanation-placeholder {
-            display: flex;
-            align-items: center;
-            font-style: italic;
-            color: #6c757d; /* Bootstrap muted color or similar */
-        }
-
-        .explanation-placeholder .spinner-border {
-            margin-right: 10px; /* Space between spinner and text */
-        }
-
-        /* --- Footer --- */
-        .app-footer {
-            text-align: center;
-            padding: 10px 0;
-            font-size: 0.75rem;
-            color: #999;
-            flex-shrink: 0;
-        }
-
-        /* Ensure card content area takes available space */
-        .card-body {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Make the description take remaining space if needed */
-        .card-text.flex-grow-1 {
-            flex-grow: 1;
-        }
-
-        /* Style for the View on Map button */
-        .btn-outline-primary {
-            /* Bootstrap styles apply, but you can customize */
-            font-size: 0.875rem; /* Slightly smaller text */
-        }
-
-        
-
-        /* Optional: Add animation for smooth transitions */
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .popularity-circle {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: #e0e0e0; /* Background circle color */
-            position: relative;
-            display: inline-block;
-            border: 2px solid #ccc; /* Optional border */
-        }
-
-        .popularity-circle::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            /* Use a solid color for the fill */
-            background-color: var(--color-1); /* Light Orange */
-            /* Clip the circle based on the percentage */
-            clip-path: polygon(50% 50%, 50% 0%, /* Calculate points based on percentage */);
-            /* We'll update the clip-path dynamically with JavaScript or use a conic gradient */
-            /* For simplicity, let's use a conic gradient */
-            /* Remove clip-path and use background */
-        }
-
-        /* --- Use Conic Gradient for Popularity Circle --- */
-        .popularity-circle {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: #e0e0e0; /* Background */
-            position: relative;
-            display: inline-block;
-            border: 2px solid #fff; /* White border */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
-        }
-
-        /* The actual filled part of the circle */
-        .popularity-circle::before {
-            content: '';
-            position: absolute;
-            top: -2px; /* Account for border */
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 50%;
-            /* Conic gradient: from center, color stops at the percentage */
-            /* var(--popularity) is the percentage (e.g., 85) */
-            background: conic-gradient(var(--color-1) /* Light Orange */ var(--popularity, 0) * 1%, #e0e0e0 var(--popularity, 0) * 1%);
-            /* Mask the center to create a donut shape if desired, or let it be a full circle */
-            /* For a full circle fill, no mask is needed */
-        }
-        /* Text inside the circle for better visibility (optional) */
-        .popularity-circle::after {
-            content: attr(data-percent); /* We'll set this data attribute in JS */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.6rem; /* Adjust font size */
-            font-weight: bold;
-            color: #333; /* Text color */
-            /* Ensure text is centered and visible */
-        }
-
-        /* --- Sidebar Styles --- */
-        .sidebar {
-            height: 100vh;
-            width: 0; /* Hidden by default */
-            position: fixed;
-            z-index: 1050; /* Higher than main content */
-            top: 0;
-            left: 0;
-            background-color: #f8f9fa;
-            border-right: 1px solid #dee2e6;
-            overflow-x: hidden;
-            transition: 0.3s;
-            padding-top: 60px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-
-        .sidebar.open {
-            width: 250px; /* Adjust width as needed */
-        }
-
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 15px 15px 15px;
-            border-bottom: 1px solid #dee2e6;
-            margin-bottom: 15px;
-        }
-
-        .sidebar-header h5 {
-            margin: 0;
-            color: var(--color-1); /* Use theme color */
-        }
-
-        .sidebar-content {
-            padding: 0 15px;
-        }
-
-        .sidebar .nav-link {
-            padding: 10px 0;
-            color: #495057;
-            border-radius: 5px;
-            margin-bottom: 5px;
-            transition: background-color 0.2s;
-        }
-
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background-color: rgba(253, 185, 78, 0.2); /* Light orange highlight */
-            color: var(--color-1);
-        }
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-            z-index: 1040; /* Below sidebar */
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
-
-        .sidebar-toggle {
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            z-index: 1030; /* Below overlay, above content */
-            border: none;
-            padding: 5px 10px;
-            font-size: 1.5rem;
-            line-height: 1;
-        }
-
-        /* Hide toggle button on welcome and history screens */
-        #welcomeScreen .sidebar-toggle,
-        #historyScreen .sidebar-toggle {
-            display: none;
-        }
-
-        /* Adjust main content padding when sidebar is open */
-        .main-content {
-            transition: margin-left 0.3s;
-        }
-
-        .main-content.shifted {
-            margin-left: 250px; /* Match sidebar width */
-        }
-
-        /* --- History Screen Styles --- */
-        #historyScreen {
-            padding-top: 60px; /* Space for fixed sidebar toggle */
-        }
-
-        .history-item {
-            background-color: #ffffff;
-            border: 1px solid #dee2e6;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            cursor: pointer;
-            transition: box-shadow 0.2s;
-        }
-
-        .history-item:hover {
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        }
-
-        .history-item h6 {
-            margin-top: 0;
-            margin-bottom: 0.5rem;
-            color: var(--color-2); /* Use theme color */
-        }
-
-        .history-item small {
-            color: #6c757d;
-        }
-
-        .history-item .badge {
-            font-size: 0.7em;
-            margin-left: 5px;
-        }
-        .accordion {
-            border: none; /* Remove default border */
-        }
-
-        .accordion-button.collapsed {
-            background-color: transparent; /* Optional: Customize button appearance */
-            color: #6c757d; /* Text color for collapsed state */
-        }
-
-        .accordion-button:not(.collapsed) {
-            background-color: rgba(var(--bs-primary-rgb), 0.1); /* Background color for expanded state */
-            color: var(--primary-color); /* Text color for expanded state */
-        }
-
-        .accordion-body {
-            padding: 0.5rem 1rem; /* Adjust padding as needed */
-        }
-    </style>
 </head>
 <body>
     <div id="app">
@@ -606,10 +17,13 @@
         <div id="sidebar" class="sidebar">
             <div class="sidebar-header">
                 <h5>QlooVoyage</h5>
-                <button id="closeSidebar" class="btn btn-sm btn-outline-secondary">&times;</button>
+                <button id="closeSidebar" class="btn btn-sm btn-outline-secondary ms-2">&times;</button>
             </div>
             <div class="sidebar-content">
                 <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="homeButton"><i class="bi bi-house-door me-2"></i> Home</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="historyLink">History</a>
                     </li>
@@ -617,40 +31,45 @@
             </div>
         </div>
 
-        <!-- Overlay for mobile -->
         <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
-        <!-- Main Content Area (wrap existing screens) -->
         <div id="mainContent" class="main-content">
-            <!-- Hamburger Menu Button (visible on all screens except welcome/history) -->
+
             <button id="openSidebar" class="btn btn-outline-secondary sidebar-toggle" type="button">
                 <i class="bi bi-list"></i>
             </button>
 
-            <!-- Welcome Screen -->
             <div id="welcomeScreen" class="screen active">
                 <div class="app-header">
+                    <img src="/images/android-chrome-512x512.png" alt="QlooVoyage Logo" class="logo-image mb-3" />
                     <h1>QlooVoyage</h1>
                     <p>Your Culturally Curated Journey</p>
                 </div>
-                <div>
+                <div class="content-overlay">
                     <h2>Discover Places That Match Your Vibe</h2>
                     <p>Let's find unique spots based on your interests and style.</p>
                     <button id="startButton" class="btn btn-primary">Start Exploring</button>
                 </div>
+
                 <div class="app-footer">
-                    <p>Powered by Qloo & Local LLM</p>
+                    <p>Powered by Qloo & Gaia Nodes (local AI inference)</p>
                 </div>
             </div>
 
+            
+            
             <!-- City Selection Screen -->
             <div id="citySelectionScreen" class="screen">
                 <div class="app-header">
                     <h1>QlooVoyage</h1>
                     <p>Where do you want to go?</p>
                 </div>
+                <div id="welcomeTooltip" class="alert alert-info alert-dismissible fade show mt-4" role="alert" style="display: none;">
+                    <strong>Welcome!</strong> Select a city and your interests to discover unique places tailored just for you!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
                 <div id="cityCardContainer" class="d-flex flex-wrap justify-content-center gap-4 mt-4">
-                    <!-- City cards will be generated here -->
+
                 </div>
                 <div id="citySelectionStatus" class="status-message mt-3" style="display: none;"></div>
                 <div class="nav-buttons">
@@ -690,7 +109,7 @@
                         <h3 id="itineraryTitle">Your Itinerary</h3>
                         <div>
                             <button id="shareItineraryBtn" class="btn btn-outline-primary btn-sm me-2" title="Share Itinerary">
-                                <i class="bi bi-share"></i> <!-- Use Bootstrap Icons -->
+                                <i class="bi bi-share"></i>
                             </button>
                             <button id="downloadPdfBtn" class="btn btn-outline-secondary btn-sm" title="Download as PDF">
                                 <i class="bi bi-file-earmark-pdf"></i>
@@ -714,7 +133,6 @@
                     <p>Your recent QlooVoyages</p>
                 </div>
                 <div id="historyList" class="mt-4">
-                    <!-- History items will be loaded here -->
                     <div class="text-center mt-5">
                         <div class="spinner-border" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -729,7 +147,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="script.js"></script>
 </body>
 </html>

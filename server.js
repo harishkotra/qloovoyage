@@ -1,25 +1,19 @@
-// server.js
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
-const axios = require('axios'); // Ensure this is present for Qloo/Gaia calls
+const axios = require('axios');
 const mysql = require('mysql2/promise');
 
 const { getRecommendations } = require('./src/qlooService');
 const { generateExplanation } = require('./src/llmService');
 
-// Load environment variables
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Middleware
 app.use(express.json());
-// app.use(cors()); // Uncomment if you need CORS
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- Database Connection Pool ---
 let db; 
 (async () => {
     try {
@@ -32,17 +26,13 @@ let db;
             waitForConnections: true,
             connectionLimit: 10,
             queueLimit: 0
-            // Add acquireTimeout if needed
-            // acquireTimeout: 60000 // 60 seconds
         });
         console.log('MySQL connection pool created.');
-        // Test the connection
         const connection = await db.getConnection();
         console.log('Successfully connected to MySQL database.');
-        connection.release(); // Release the test connection back to the pool
+        connection.release();
     } catch (err) {
         console.error('Error setting up MySQL connection pool:', err.message);
-        // Consider process.exit(1) if DB is critical
     }
 })();
 
@@ -440,6 +430,6 @@ app.get('/api/shared-itinerary/:shareToken', async (req, res) => {
 });
 
 // --- Start Server ---
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => { // Listen on 0.0.0.0 for Vercel compatibility
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

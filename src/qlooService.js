@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const QLOO_API_BASE_URL = 'https://hackathon.api.qloo.com';
+const QLOO_API_BASE_URL = process.env.QLOO_API_BASE_URL || 'https://hackathon.api.qloo.com';
 const QLOO_API_KEY = process.env.QLOO_API_KEY;
 
 if (!QLOO_API_KEY) {
@@ -29,8 +29,6 @@ async function searchEntities(query) {
         //console.log(`Search Entities Response Status: ${response.status}`);
 
         if (response.data?.results && Array.isArray(response.data.results)) {
-            // Prioritize entities that seem more concrete (e.g., artists) over generic ones
-            // This is a heuristic. A better way would be to check the 'type' or 'subtype' if available and known to be good for cross-domain.
             return response.data.results.map(item => ({
                 id: item.id || item.entity_id,
                 name: item.name,
@@ -87,24 +85,18 @@ async function searchTags(query) {
 async function getRecommendations(interests, locationName) {
     try {
         //console.log(`Fetching recommendations for interests: [${interests.join(', ')}], location: ${locationName}`);
-
-        // --- Step 1: Resolve User Interests ---
         const signalEntities = [];
         const signalTags = [];
 
         for (const interest of interests) {
-            //console.log(`Attempting to resolve interest: ${interest}`);
-            // --- Resolution Strategy ---
-            // 1. Try Tags First (Better for genres/concepts like "Ambient music")
             let tags = await searchTags(interest);
             if (tags.length > 0) {
-                signalTags.push(tags[0].id); // Take first match
+                signalTags.push(tags[0].id);
                 //console.log(`Resolved '${interest}' to tag ID: ${tags[0].id}`);
             } else {
-                // 2. Fallback to Entities if Tag not found
                 let entities = await searchEntities(interest);
                 if (entities.length > 0) {
-                    signalEntities.push(entities[0].id); // Take first match
+                    signalEntities.push(entities[0].id);
                     //console.log(`Resolved '${interest}' to entity ID: ${entities[0].id} (${entities[0].type})`);
                 } else {
                     console.warn(`Could not resolve interest '${interest}' to a known entity or tag. Skipping.`);
@@ -112,16 +104,13 @@ async function getRecommendations(interests, locationName) {
             }
         }
 
-        // Check if we have any resolved signals
         if (signalEntities.length === 0 && signalTags.length === 0) {
             console.warn("No valid signals (entities or tags) found for user interests.");
             return [];
         }
 
-        // --- Step 2: Construct the Insights API Request for Places ---
         const params = {
             'filter.type': 'urn:entity:place',
-            // Include resolved signals
             ...signalEntities.length > 0 && { 'signal.interests.entities': signalEntities.join(',') },
             ...signalTags.length > 0 && { 'signal.interests.tags': signalTags.join(',') },
             'filter.location.query': locationName,
@@ -129,39 +118,28 @@ async function getRecommendations(interests, locationName) {
         };
 
         //console.log("Qloo Insights API Request Params:", params);
-
-        // --- Step 3: Make the API Call ---
         const response = await qlooClient.get('/v2/insights', { params });
         //console.log("Qloo Insights API Response Status:", response.status);
 
-        // --- Step 4: Process the Response & Handle Warnings ---
-        // Check for warnings first
         if (response.data?.warnings && Array.isArray(response.data.warnings)) {
             for (const warning of response.data.warnings) {
                 if (warning.type === 'not_found') {
                     console.warn("Qloo API returned 'not_found' warnings for signals:", warning);
-                    // You could potentially remove the problematic signal and retry,
-                    // but for simplicity, we'll log and proceed. If all signals are bad, results might be empty.
                 } else {
                      console.warn("Qloo API returned other warning:", warning);
                 }
             }
         }
 
-        // Check for results structure
-        // The provided log shows `response.data.results.entities` array.
-        // Let's adapt to that structure.
         let rawResults = [];
         if (response.data?.results?.entities && Array.isArray(response.data.results.entities)) {
             rawResults = response.data.results.entities;
             //console.log(`Successfully retrieved ${rawResults.length} raw results from Qloo.`);
         } else if (response.data?.results && Array.isArray(response.data.results)) {
-             // Fallback to previous assumption
              rawResults = response.data.results;
              //console.log(`Successfully retrieved ${rawResults.length} raw results (fallback structure) from Qloo.`);
         } else {
             console.warn("Unexpected Qloo Insights API response structure for results:", response.data);
-            // Log the full response for debugging unexpected structure
             // //console.log("Full Qloo Response Data:", JSON.stringify(response.data, null, 2));
             return [];
         }
@@ -171,14 +149,11 @@ async function getRecommendations(interests, locationName) {
              return [];
         }
 
-        // --- Step 5: Parse Individual Results ---
         const parsedResults = rawResults.map(item => {
-            const id = item.entity_id || item.id; // Check entity_id first
+            const id = item.entity_id || item.id;
             const name = item.name || 'Unknown Place';
-            // Simplify type
             let type = 'Place';
             if (item.subtype === 'urn:entity:place') {
-                // Extract a more user-friendly category if possible
                 const categoryTag = item.tags?.find(tag => tag.type === 'urn:tag:category:place');
                 if (categoryTag) {
                     type = categoryTag.name;
@@ -190,11 +165,9 @@ async function getRecommendations(interests, locationName) {
                 }
             }
 
-            // Description is nested
             const description = item.properties?.description || item.summary || '';
-            // Use popularity as score
             const affinityScore = item.popularity || item.score || item.affinity || 0;
-            const qlooMetadata = item; // Pass full item
+            const qlooMetadata = item;
 
             return { id, name, type, description, affinityScore, qlooMetadata };
         });
@@ -212,7 +185,6 @@ async function getRecommendations(interests, locationName) {
         } else {
             console.error('Error setting up Qloo API request:', error.message);
         }
-        // Return empty array on error to allow graceful handling
         return [];
     }
 }
