@@ -2,7 +2,12 @@
 
 **QlooVoyage**, is an innovative travel planning application that redefines personalized discovery. Unlike traditional recommendation engines, QlooVoyage doesn't just guess what you might like; it leverages the power of Qloo's Taste AI™ and Large Language Models (LLMs) to curate itineraries grounded in real-world cultural behaviors and explained through intelligent narratives. Every recommendation comes with a "why," making your journey not just personalized, but truly meaningful. 
 
-Built with a privacy-first approach, QlooVoyage ensures your data stays private while delivering exceptional experiences. It's designed to be your go-to companion for uncovering places that resonate with your unique cultural tastes, whether you're a local exploring your city or a traveler seeking authentic experiences. 
+Built with a privacy-first approach, QlooVoyage ensures your data stays private while delivering exceptional experiences. It's designed to be your go-to companion for uncovering places that resonate with your unique cultural tastes, whether you're a local exploring your city or a traveler seeking authentic experiences.
+
+<img width="428" height="926" alt="image" src="https://github.com/user-attachments/assets/6fdb3a51-aae5-4b71-a283-27a0cbaf7fc3" />
+<img width="428" height="1417" alt="image" src="https://github.com/user-attachments/assets/a6038735-5f02-4790-853d-bdd593d1baf7" />
+<img width="425" height="851" alt="image" src="https://github.com/user-attachments/assets/384481b5-aac5-4350-ab40-335bf0ae4160" />
+<img width="428" height="993" alt="image" src="https://github.com/user-attachments/assets/33059ad0-4bf6-413d-95e4-fdad6601633a" />
 
 ## Key Features 
 
@@ -10,7 +15,7 @@ Built with a privacy-first approach, QlooVoyage ensures your data stays private 
 - **AI-Powered Explanations**: Understand the 'why' behind each suggestion. Our integration with Qloo's LLM APIs provides clear, engaging reasons based on real data.
 - **Privacy-First Design**: Operates without collecting or using personally identifiable information (PII). Your exploration stays yours.
 - **Dynamic & Adaptive**: Recommendations adapt based on your interests, offering a tailored experience every time.
-- **Share & Save: Easily share your unique itineraries with friends or download them as a PDF for offline use.
+- **Share & Save**: Easily share your unique itineraries with friends or download them as a PDF for offline use.
 - **Mobile-Optimized**: Crafted for an intuitive and delightful experience on any device, with a focus on mobile usability.
 
 ## How It Works 
